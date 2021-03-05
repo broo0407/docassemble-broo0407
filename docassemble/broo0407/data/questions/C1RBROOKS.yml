@@ -1,0 +1,164 @@
+---
+objects:
+  - endpoint: DADict
+---
+# welcome screen
+mandatory: True
+question: Welcome!
+subquestion: |
+  This application will assist you in completing the relevant form for the Federal Court and the Federal Curcuit Court. 
+  
+  ***Disclaimer:***  
+  **This advice is not to be taken as legal advice and does not substitute
+  seeking independent legal advice. We recommend having this form checked by a lawyer prior to lodgement.**
+
+  By clicking continue you agree to this terms.
+
+buttons:
+  - "I accept and want to continue": continue
+  - "I do not accept": exit
+---
+# eligibility test
+mandatory: True
+code: |
+  if RMBcourt == 'Federal Circuit Court' or RMBcourt == 'Federal Court' :
+    ['eligible']
+  else:
+    endpoint['ineligible']
+---
+mandatory: true
+question: Which court
+fields:
+  - Which court is this file to be completed for?: RMBcourt
+    datatype: radio
+    choices: 
+      - Supreme Court
+      - Distrcit Court 
+      - Magistrates Court 
+      - Federal Court 
+      - Federal Circuit Court 
+---
+# This is the ineligible endpoint
+event: endpoint['ineligible']
+question: Eligibility requirements not met
+subquestion:
+  It appears you do not meet our eligibility requirements.  This application will assist in preparing forms for the Federal Court and the Federal Curcuit Court only. 
+buttons:
+  - Exit: exit
+    url: http://www.courts.sa.gov.au/Pages/default.aspx
+  - Restart: restart 
+---
+mandatory: true
+question: What is the applicants name?
+fields:
+  - Salutation: RMBsalutation
+    choices:
+      - Dr
+      - Mr
+      - Mrs
+      - Ms
+      - Miss
+  - First Name: RMBfirstname
+  - Last Name: RMBsurname
+---
+mandatory: true 
+question: What state do you live in?
+fields:
+  - no label: RMBstate
+    datatype: radio
+    choices:
+      - SA
+      - WA
+      - QLD
+      - VIC
+      - NSW
+      - TAS
+      - NT
+---
+mandatory: true 
+question: What area does this claim cover?
+fields:
+  - no label: RMBdivision 
+    datatype: radio
+    choices:
+      - Criminal
+      - Corporations 
+      - Employment 
+      - General 
+---
+mandatory: true
+question: What is the respondents name?
+fields:
+  - Salutation: RMBsalutationOP
+    choices:
+      - Dr
+      - Mr
+      - Mrs
+      - Ms
+      - Miss
+  - First Name: RMBfirstnameOP
+  - Last Name: RMBsurnameOP
+---
+mandatory: true
+question: What is the date of the claim?
+fields:
+  - Day: RMBday
+    datatype: integer
+  - Month: RMBmonth
+    datatype: dropdown
+    choices:
+      - January 
+      - Feburary 
+      - March
+      - April
+      - May
+      - June
+      - July
+      - August 
+      - September
+      - October
+      - November 
+      - December 
+  - Year: RMByear 
+    datatype: integer 
+---
+mandatory: true
+question: Who is completeing this form?
+fields:
+  - Salutation: RMBsalutationC
+    choices:
+      - Dr
+      - Mr
+      - Mrs
+      - Ms
+      - Miss
+  - First Name: RMBfirstnameC
+  - Last Name: RMBlastnameC
+  - Capacity: RMBcapacity
+---
+mandatory: true 
+event: ['eligible']
+attachment:
+  docx template file: Form.docx 
+  valid formats:
+      - pdf
+question: Thankyou!
+subquestion: |
+  This table details the answers you have given. These will be included on the form. 
+  
+    Question    |Your answer
+  ---------------|----------------
+  Applicant  | ${ RMBsalutation } ${ RMBfirstname } ${ RMBsurname }
+  Your state | ${ RMBstate }
+  Division   | ${ RMBdivision }
+  Respondent | ${ RMBsalutationOP} ${ RMBfirstnameOP } ${ RMBsurnameOP }
+  Who completed the form  | ${ RMBsalutationC } ${RMBfirstnameC } ${ RMBlastnameC }
+  Capacity   | ${ RMBcapacity }
+  Date       | ${ RMBday } ${ RMBmonth } ${RMByear }
+
+  Your document is ready. Please see below to download or email the form. 
+buttons:
+  - Exit: exit
+    url: http://www.courts.sa.gov.au/Pages/default.aspx
+  
+
